@@ -153,27 +153,41 @@ const internLogShort = data =>{
 }
 
 const createEmployeeObjs = empData => {
-    // create manager object
-    // if engineers exist
-        // for each create engineer object
-    // if interns exist
-        // for each create intern object
-    // push all created objects to their respective arrays in the employee obj
+    const manager = new Manager (empData.managerName, empData.managerId, empData.managerEmail, empData.managerRoomNum)
+    employeesObj.manager.push(manager);
 
-}
-
-init()
-    .then(data => {
-        console.log("newEmps", data)
-        if (data.newEmpVerify && data.selectedEmployeeType === "Engineer") {
-            return engineerLog(data);
-        } else if (data.selectedEmployeeType === "Intern") {
-            return internLog(data);
-        } else {
-            return data
+    if(empData.engineers) {
+        for (let i = 0; i < empData.engineers.length; i++){
+            let emp = empData.engineers[i]
+            const engineer = new Engineer (emp.engineerName, emp.engineerId, emp.engineerEmail, emp.engineerGitHub);
+            employeesObj.engineers.push(engineer);
         }
-    })
-    .then (data => {
-        console.log(data)
-        console.log("You are here")
-    })
+    }
+
+    if(empData.interns) {
+        for (let i = 0; i < empData.interns.length; i++){
+            let emp = empData.interns[i]
+            const intern = new Intern (emp.internName, emp.internId, emp.internEmail, emp.internSchool);
+            employeesObj.interns.push(intern);
+        }
+    }
+    console.log(employeesObj)
+};
+
+createEmployeeObjs(testObj);
+
+// init()
+//     .then(data => {
+//         console.log("newEmps", data)
+//         if (data.newEmpVerify && data.selectedEmployeeType === "Engineer") {
+//             return engineerLog(data);
+//         } else if (data.selectedEmployeeType === "Intern") {
+//             return internLog(data);
+//         } else {
+//             return data
+//         }
+//     })
+//     .then (data => {
+//         console.log(data)
+//         console.log("You are here")
+//     })
