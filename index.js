@@ -1,18 +1,22 @@
+const fs = require("fs");
 const inquirer = require("inquirer");
 const { startingQuestions, engineerQuestions, internQuestions } = require("./src/questions");
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+const generateHTML = require("./src/html-template");
 
 const answers = []
 
+// empty employees object
 const employeesObj = {
+    teamName:"",
     manager: [],
     engineers: [],
     interns: []
 }
 
-
+// testObj for testing the HTML generation
 const testObj = {
     teamName: 'Duh Bestest Team Evur',
     managerName: 'Alphonso',
@@ -56,10 +60,12 @@ const testObj = {
     ]
   }
 
+// funtion that initiates the questionnaire
 const init = () => {
     return inquirer.prompt(startingQuestions,answers);
 }
 
+// if engineers are selected to be added first, this is the logic for adding them
 const engineerLog = data => {
     if (!data.engineers) {
         data.engineers = []
@@ -68,7 +74,7 @@ const engineerLog = data => {
     return inquirer.prompt(engineerQuestions, answers)
         .then(newAnswers => {
             data.engineers.push(newAnswers)
-            console.log(data)
+            // console.log(data)
             if (newAnswers.addNewEngineerConfirm) {
                 return engineerLog(data)
             } else {
@@ -82,7 +88,7 @@ const engineerLog = data => {
                         }
                     ], data)
                     .then(internConfirm => {
-                        console.log("internConfirm", internConfirm)
+                        // console.log("internConfirm", internConfirm)
                         if (internConfirm.addInternsConfirm) {
                             return internLogShort(internConfirm)
                         }
@@ -92,6 +98,7 @@ const engineerLog = data => {
         });
 };
 
+// if interns are added first this is logic to add engineers if the user asks to add engineers
 const engineerLogShort = data => {
     if (!data.engineers) {
         data.engineers = []
@@ -99,7 +106,7 @@ const engineerLogShort = data => {
     return inquirer.prompt(engineerQuestions, answers)
         .then(newAnswers => {
             data.engineers.push(newAnswers)
-            console.log(data)
+            // console.log(data)
             if (newAnswers.addNewEngineerConfirm) {
                 return engineerLogShort(data);
             }
@@ -107,6 +114,7 @@ const engineerLogShort = data => {
         });
 };
 
+// if interns are selected to be added first, this is the logic for adding them
 const internLog = data => {
     if (!data.interns) {
         data.interns = []
@@ -114,7 +122,7 @@ const internLog = data => {
     return inquirer.prompt(internQuestions, answers)
         .then(internData => {
             data.interns.push(internData)
-            console.log(data)
+            // console.log(data)
             if (internData.addNewEngineerConfirm) {
                 return internLog(data)
             } else {
@@ -128,7 +136,7 @@ const internLog = data => {
                         }
                     ], data)
                     .then(engineerConfirm => {
-                        console.log("engineerConfirm", engineerConfirm)
+                        // console.log("engineerConfirm", engineerConfirm)
                         if (engineerConfirm.addEngineersConfirm) {
                             return engineerLogShort(engineerConfirm)
                         }
@@ -138,6 +146,7 @@ const internLog = data => {
         })
 }
 
+// if engineers are added first this is logic to add interns if the user asks to add interns
 const internLogShort = data =>{
     if (!data.interns) {
         data.interns = []
@@ -152,9 +161,11 @@ const internLogShort = data =>{
         })
 }
 
+// converts question answers to an object to passthrough HTML generation
 const createEmployeeObjs = empData => {
+    employeesObj.teamName = empData.teamName;
     const manager = new Manager (empData.managerName, empData.managerId, empData.managerEmail, empData.managerRoomNum)
-    employeesObj.manager.push(manager);
+    employeesObj.manager = manager;
 
     if(empData.engineers) {
         for (let i = 0; i < empData.engineers.length; i++){
@@ -171,23 +182,41 @@ const createEmployeeObjs = empData => {
             employeesObj.interns.push(intern);
         }
     }
-    console.log(employeesObj)
+    return employeesObj
 };
 
-createEmployeeObjs(testObj);
+// creates HTML file and saves it to the /dist folder
+const createHtml = data => {
+return new Promise ((resolve, reject) => {
+    fs.writeFile("./dist/team.html", data, err => {
+            if (err) {
+                reject(err)
+                return;
+            }
+            resolve({
+                ok:true,
+                message:"Creating file... \n Your team site can be found in the dist folder."
+            })
+        })
+    })
+}
 
-// init()
-//     .then(data => {
-//         console.log("newEmps", data)
-//         if (data.newEmpVerify && data.selectedEmployeeType === "Engineer") {
-//             return engineerLog(data);
-//         } else if (data.selectedEmployeeType === "Intern") {
-//             return internLog(data);
-//         } else {
-//             return data
-//         }
-//     })
-//     .then (data => {
-//         console.log(data)
-//         console.log("You are here")
-//     })
+init()
+    .then(data => {
+        if (data.newEmpVerify && data.selectedEmployeeType === "Engineer") {
+            return engineerLog(data);
+        } else if (data.selectedEmployeeType === "Intern") {
+            return internLog(data);
+        } else {
+            return data
+        }
+    })
+    .then (data => {
+        return createEmployeeObjs(data)
+    })
+    .then (employeeObj => {
+        return generateHTML(employeeObj);
+    })
+    .then (tempLitHtml => {
+        return createHtml(tempLitHtml)
+    });
