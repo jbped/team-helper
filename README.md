@@ -13,10 +13,14 @@ Team Helper is an HTML page generator for Software Engineering Teams. It is desi
 * [Tests](#tests)
 
 ## Installation
-1. Clone the repository 2. Open command line in the appropriate directory 3. Enter the following command: npm i
+1. Clone the repository 
+2. Open command line in the appropriate directory 
+3. Enter the following command: ```npm i```
 
 ## Usage
-Complete the installation steps. Once the installation steps have been completed initate the command prompts by entering node index in an active command terminal. This will initiate the questions. Answer each question to the best of your ability. Once all questions have been answered a team organization HTML file will be generated and saved to the /dist folder. Note that any new file generated will overwrite the previous file. Be sure to copy and save it to another location prior to generating a new file.
+Complete the installation steps. Once the installation steps have been completed initate the command prompts by entering ```node index``` in an active command terminal. This will initiate the questions. Answer each question to the best of your ability. Once all questions have been answered a team organization HTML file will be generated and saved to the /dist folder. Note that any new file generated will overwrite the previous file. Be sure to copy and save it to another location prior to generating a new file.
+
+Here is a [walkthrough video of Team Helper!](https://drive.google.com/file/d/1T2bQoIJISCVLSrmrcVDUBZlAoPSjFoG5/view)
 
 ## Credits
 ### Assets
@@ -39,7 +43,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 Contributions to this project follow the Contributor Covenant [additional information can be found here](https://www.contributor-covenant.org/version/2/0/code_of_conduct/).
 
 ## Tests
-Four tests were conducted, one for each object type: Employee, Engineer, Intern, and Manager.
+Four tests were conducted, one for each object type: Employee, Engineer, Intern, and Manager. To initiate the tests: 
+1. Open command line in the appropriate directory
+2. Enter the following command: ```npm run test```
         
 ## Questions
 For any inquiries regarding Team Helper, please contact Jake Pedigo:
