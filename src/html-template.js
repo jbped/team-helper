@@ -32,7 +32,7 @@ const engineerCards = engineersArr => {
                 <ul class="list-group list-group-flush px-2">
                     <li class="list-group-item">Email: <a href="mailto: ${engineer.email}"
                             target="_blank">${engineer.email}</a></li>
-                    <li class="list-group-item">GitHub: <a href="https://github.com/${engineer.github}">${engineer.github}</a></li>
+                    <li class="list-group-item">GitHub: <a href="https://github.com/${engineer.github}" target="_blank">${engineer.github}</a></li>
                 </ul>
             </div>
         `
